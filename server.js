@@ -11,6 +11,7 @@ const dbConnection = require('./Configurations/database');
 
 const categoryRoute = require('./APIs/CategoryRoute');
 const subCategoryRoute = require('./APIs/subCategoryRoute');
+const brandRoute = require('./APIs/brandsRoute');
 
 //connect with db
 dbConnection();
@@ -29,6 +30,8 @@ if (process.env.NODE_ENV === 'development') {
 //mount routes
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subCategories', subCategoryRoute);
+app.use('/api/v1/brands', brandRoute);
+
 
 
 // 404 error handler
