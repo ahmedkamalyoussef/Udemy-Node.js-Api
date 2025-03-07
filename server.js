@@ -12,6 +12,7 @@ const dbConnection = require('./Configurations/database');
 const categoryRoute = require('./APIs/CategoryRoute');
 const subCategoryRoute = require('./APIs/subCategoryRoute');
 const brandRoute = require('./APIs/brandsRoute');
+const productRoute = require('./APIs/ProductRoute');
 
 //connect with db
 dbConnection();
@@ -31,6 +32,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subCategories', subCategoryRoute);
 app.use('/api/v1/brands', brandRoute);
+app.use('/api/v1/products', productRoute);
 
 
 
