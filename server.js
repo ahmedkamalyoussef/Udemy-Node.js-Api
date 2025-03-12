@@ -13,6 +13,7 @@ const categoryRoute = require('./APIs/CategoryRoute');
 const subCategoryRoute = require('./APIs/subCategoryRoute');
 const brandRoute = require('./APIs/brandsRoute');
 const productRoute = require('./APIs/ProductRoute');
+const userRoute = require("./APIs/userRoute");
 
 //connect with db
 dbConnection();
@@ -33,6 +34,7 @@ app.use('/api/v1/categories', categoryRoute);
 app.use('/api/v1/subCategories', subCategoryRoute);
 app.use('/api/v1/brands', brandRoute);
 app.use('/api/v1/products', productRoute);
+app.use('/api/v1/users', userRoute);
 
 
 
