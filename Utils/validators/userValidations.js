@@ -2,6 +2,7 @@ const { check, body } = require("express-validator");
 const validatorMiddleware = require("../../middlewares/validatorMiddleware");
 const slugify = require("slugify");
 const User = require("../../models/user");
+const bcrypt = require("bcryptjs");
 
 exports.createUserValidator = [
   check("name")
@@ -27,19 +28,20 @@ exports.createUserValidator = [
     return true;
   }),
 
-  check("confirmPassword").notEmpty().withMessage("confirm password cant be empty"),
+  check("confirmPassword")
+    .notEmpty()
+    .withMessage("confirm password cant be empty"),
 
   check("password")
     .notEmpty()
     .withMessage("Please enter your password")
     .isLength({ min: 6 })
     .withMessage("password must be at least 6 characters")
-    .custom((password, { req }) => { 
+    .custom((password, { req }) => {
       if (req.body.confirmPassword && password !== req.body.confirmPassword)
         throw new Error("Passwords do not match");
       return true;
     }),
-  
 
   check("role").optional(),
   check("profileImage").optional(),
@@ -61,6 +63,49 @@ exports.updateUserValidator = [
   }),
   validatorMiddleware,
 ];
+
+exports.changeUserPasswordValidator = [
+  check("id").isMongoId().withMessage("Invalid Id"),
+
+  check("currentPassword")
+    .notEmpty()
+    .withMessage("Current password is required"),
+
+  check("newPassword")
+    .notEmpty()
+    .withMessage("New password is required")
+    .isLength({ min: 6 })
+    .withMessage("New password must be at least 6 characters"),
+
+  check("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom(async (confirmPassword, { req }) => {
+      if (confirmPassword !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+    }),
+
+  check("newPassword").custom(async (newPassword, { req }) => {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(
+      req.body.currentPassword,
+      user.password
+    );
+    if (!isMatch) {
+      throw new Error("Incorrect current password");
+    }
+
+    return true;
+  }),
+
+  validatorMiddleware,
+];
+
 
 exports.deleteUserValidator = [
   check("id").isMongoId().withMessage("invalid Id"),
