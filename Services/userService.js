@@ -1,8 +1,8 @@
+const asyncHandler = require("express-async-handler");
+const bcrypt = require("bcryptjs");
 const factoryHandlers = require("./factoryHandlers");
 const ApiError = require("../Utils/ApiError");
 const User = require("../models/user");
-const asyncHandler = require("express-async-handler");
-const bcrypt = require("bcryptjs");
 
 
 exports.createUser = factoryHandlers.createOne(User);

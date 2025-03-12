@@ -13,13 +13,14 @@ const {
     updateCategory,
     deleteCategory
 } = require('../Services/categoryService');
+const authService = require("../Services/authService");
 
 const router = express.Router();
 
 router.use('/:categoryId/subCategories', subCategoryRoute);
 
 router.route('/')
-    .post(createCategoryValidator, createCategory)
+    .post(authService.protect,createCategoryValidator, createCategory)
     .get(getCategories);
 
 router.route('/:id')
