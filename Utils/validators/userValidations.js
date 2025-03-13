@@ -105,6 +105,45 @@ exports.changeUserPasswordValidator = [
 
   validatorMiddleware,
 ];
+exports.changePasswordValidator = [
+  check("currentPassword")
+    .notEmpty()
+    .withMessage("Current password is required"),
+
+  check("newPassword")
+    .notEmpty()
+    .withMessage("New password is required")
+    .isLength({ min: 6 })
+    .withMessage("New password must be at least 6 characters"),
+
+  check("confirmPassword")
+    .notEmpty()
+    .withMessage("Confirm password is required")
+    .custom(async (confirmPassword, { req }) => {
+      if (confirmPassword !== req.body.newPassword) {
+        throw new Error("Passwords do not match");
+      }
+    }),
+
+  check("newPassword").custom(async (newPassword, { req }) => {
+    const user = await User.findById(req.user._id);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const isMatch = await bcrypt.compare(
+      req.body.currentPassword,
+      user.password
+    );
+    if (!isMatch) {
+      throw new Error("Incorrect current password");
+    }
+
+    return true;
+  }),
+
+  validatorMiddleware,
+];
 
 
 exports.deleteUserValidator = [

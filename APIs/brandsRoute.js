@@ -12,9 +12,11 @@ const {
     deleteBrandValidator,
     getBrandValidator,
 } = require('../Utils/validators/brandValidations');
+const authService = require("../Services/authService");
 
 const router = express.Router(); 
 
+router.use(authService.protect);
 
 
 router.route('/')

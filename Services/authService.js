@@ -6,12 +6,7 @@ const User = require("../models/user");
 const bcrypt = require("bcryptjs");
 const sendEmail = require("../Utils/sendEmail");
 const { resetPasswordTemplate } = require("../Utils/resetPasswordTemplate");
-
-const generateJwtToken = (payload) => {
-  return jwt.sign({ id: payload }, process.env.JWT_SECRET_KEY, {
-    expiresIn: process.env.JWT_EXPIRATION_TIME,
-  });
-};
+const generateJwtToken = require("../Utils/generateJwtToken");
 
 exports.register = asyncHandler(async (req, res, next) => {
   const user = await User.create({
