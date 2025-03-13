@@ -63,3 +63,22 @@ exports.loginValidator = [
     .withMessage("password must be at least 6 characters"),
   validatorMiddleware,
 ];
+
+exports.resetPasswordValidator = [
+  check("email").notEmpty().withMessage("email is required").isEmail(),
+  check("confirmPassword")
+    .notEmpty()
+    .withMessage("confirm password cant be empty"),
+
+  check("newPassword")
+    .notEmpty()
+    .withMessage("Please enter your password")
+    .isLength({ min: 6 })
+    .withMessage("password must be at least 6 characters")
+    .custom((password, { req }) => {
+      if (req.body.confirmPassword && password !== req.body.confirmPassword)
+        throw new Error("Passwords do not match");
+      return true;
+    }),
+  validatorMiddleware,
+];
